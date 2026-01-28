@@ -149,9 +149,9 @@ export const translations = {
         },
         {
           id: 'ruby',
-          name: 'Ruby on Rails',
+          name: 'Ruby',
           category: 'Backend',
-          description: 'Webアプリケーション開発',
+          description: '技術書を活用した基本知識の習得',
           level: 55,
         },
         {
@@ -206,9 +206,9 @@ export const translations = {
         },
         {
           id: 'ruby',
-          name: 'Ruby on Rails',
+          name: 'Ruby',
           category: 'Backend',
-          description: 'Web application development',
+          description: 'Basic knowledge acquisition using technical books',
           level: 55,
         },
         {
