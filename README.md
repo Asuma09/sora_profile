@@ -4,7 +4,7 @@ Modern and interactive portfolio website showcasing Technology × Language × Cr
 
 ## 📱 Demo
 
-Live site: [Your Vercel URL]
+Live site: [https://sora-profile.vercel.app/]
 
 ## ✨ Features
 
