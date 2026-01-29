@@ -1,4 +1,25 @@
+/**
+ * translations/index.ts - 多言語翻訳データ管理モジュール
+ * 
+ * このファイルはアプリケーション全体で使用される翻訳テキストを
+ * 一元管理しています。日本語（ja）と英語（en）の2言語に対応。
+ * 
+ * 構造:
+ * - translations オブジェクト: セクション別に翻訳データを格納
+ * - 各セクションは { ja: {...}, en: {...} } の形式で言語別データを持つ
+ * 
+ * 使用方法:
+ * ```typescript
+ * import { translations } from '../translations';
+ * const t = translations.hero[language]; // languageは'ja'または'en'
+ * console.log(t.title); // 現在の言語に応じたタイトルを取得
+ * ```
+ */
 export const translations = {
+  /**
+   * Header Section - ナビゲーションメニューの翻訳
+   * 各メニュー項目のラベルテキストを定義
+   */
   // Header
   header: {
     ja: {
@@ -12,6 +33,22 @@ export const translations = {
       skills: 'Skills',
       projects: 'Projects',
       goals: 'Goals',
+    },
+  },
+
+  // Profile Section
+  profile: {
+    ja: {
+      name: '飛鳥馬　空',
+      title_position: '桃山学院大学 国際教養学部 3年生',
+      location: '大阪府',
+      bio: 'プログラミング、フランス語、クリエイティブな活動に取り組む。テクノロジーと言語学を組み合わせ、グローバルな視点で価値を創造することを目指しています。',
+    },
+    en: {
+      name: 'Sora Asuma',
+      title_position: 'Junior at Momoyama Gakuin University International Liberal Arts',
+      location: 'Osaka, Japan',
+      bio: ' passionate about programming, French language, and creative activities. I aim to create value from a global perspective by combining technology and linguistics.',
     },
   },
 

@@ -1,9 +1,31 @@
+/**
+ * Footer.tsx - フッターセクションコンポーネント
+ * 
+ * このコンポーネントはページ下部のフッターを提供します。
+ * ブランド情報、ナビゲーションリンク、SNSリンクを含みます。
+ * 
+ * 主な機能:
+ * - 3カラムレイアウト（ブランド/ナビゲーション/SNS）
+ * - ソーシャルメディアリンク（GitHub, Email）
+ * - 著作権表示と制作クレジット
+ * - ホバーアニメーション付きSNSアイコン
+ */
+
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Mail, Heart, LucideIcon } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
+/**
+ * SocialLink - ソーシャルリンクの型定義
+ * 
+ * @property {string} id - 一意の識別子
+ * @property {string} name - 表示名（アクセシビリティ用）
+ * @property {LucideIcon} icon - 表示するアイコンコンポーネント
+ * @property {string} url - リンク先URL
+ * @property {string} color - ホバー時のスタイル（Tailwind CSSクラス）
+ */
 interface SocialLink {
   id: string;
   name: string;
@@ -12,6 +34,12 @@ interface SocialLink {
   color: string;
 }
 
+/**
+ * socialLinks - ソーシャルメディアリンクの配列
+ * 
+ * @description フッターに表示するSNSリンクを定義
+ *              各リンクにはアイコン、URL、ホバースタイルを含む
+ */
 const socialLinks: SocialLink[] = [
   {
     id: 'github',
@@ -29,10 +57,20 @@ const socialLinks: SocialLink[] = [
   },
 ];
 
+/**
+ * Footer - フッターコンポーネント
+ * 
+ * @description ページ下部のフッターを表示
+ *              ブランド情報、ナビゲーション、SNSリンクを3カラムで配置
+ * 
+ * @returns {JSX.Element} フッター要素
+ */
 const Footer: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.footer[language];
   const headerT = translations.header[language];
+  
+  /** 現在の年を取得（著作権表示用） */
   const currentYear = new Date().getFullYear();
 
   const navLinks = [

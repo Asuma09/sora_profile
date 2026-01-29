@@ -1,15 +1,50 @@
+/**
+ * Hero.tsx - ヒーローセクションコンポーネント
+ * 
+ * このコンポーネントはページのファーストビューとなる
+ * メインビジュアルセクションを提供します。
+ * 
+ * 主な機能:
+ * - ダイナミックなグラデーション背景アニメーション
+ * - 浮遊する光の粒子エフェクト
+ * - タイトル・サブタイトル・説明文の表示
+ * - スキルキーワードのタグ表示
+ * - スクロールインジケーター
+ * 
+ * アニメーション:
+ * - Framer Motionによるスムーズなフェードイン
+ * - 背景の光球が緩やかに移動
+ * - アイコンのスプリングアニメーション
+ */
+
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Globe, Sparkles } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
+/**
+ * iconComponents - ヒーローセクションに表示するアイコン設定
+ * 
+ * @description 3つの柱（Technology, Language, Creativity）を
+ *              象徴するアイコンとその表示遅延時間を定義
+ * @property {LucideIcon} Icon - 表示するアイコンコンポーネント
+ * @property {number} delay - アニメーション開始までの遅延（秒）
+ */
 const iconComponents = [
-  { Icon: Code2, delay: 0.2 },
-  { Icon: Globe, delay: 0.4 },
-  { Icon: Sparkles, delay: 0.6 },
+  { Icon: Code2, delay: 0.2 },      // Technology（コード）
+  { Icon: Globe, delay: 0.4 },      // Language（グローバル）
+  { Icon: Sparkles, delay: 0.6 },   // Creativity（創造性）
 ];
 
+/**
+ * Hero - ヒーローセクションコンポーネント
+ * 
+ * @description 画面全体を使ったインパクトのあるファーストビュー。
+ *              背景アニメーション、タイトル、キーワードタグを表示。
+ * 
+ * @returns {JSX.Element} ヒーローセクション要素
+ */
 const Hero: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.hero[language];
@@ -119,7 +154,7 @@ const Hero: React.FC = () => {
 
         {/* Main title */}
         <motion.h1
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-blue-400 bg-clip-text text-transparent whitespace-nowrap overflow-hidden text-ellipsis px-2"
+          className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-white via-blue-200 to-blue-400 bg-clip-text text-transparent px-2"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
@@ -129,7 +164,7 @@ const Hero: React.FC = () => {
 
         {/* Subtitle */}
         <motion.p
-          className="text-xl md:text-2xl text-slate-300 mb-4"
+          className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 mb-2 sm:mb-4 px-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
@@ -139,7 +174,7 @@ const Hero: React.FC = () => {
 
         {/* Description */}
         <motion.p
-          className="text-sm sm:text-base text-slate-400 mb-8 mx-auto leading-relaxed text-center whitespace-nowrap"
+          className="text-xs sm:text-sm md:text-base text-slate-400 mb-6 sm:mb-8 mx-auto leading-relaxed text-center max-w-2xl px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}

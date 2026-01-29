@@ -1,3 +1,16 @@
+/**
+ * Skills.tsx - スキルセクションコンポーネント
+ * 
+ * このコンポーネントは技術スキルと資格を視覚的に表示します。
+ * 各スキルはカードUIで表現され、習熟度をプログレスバーで示します。
+ * 
+ * 主な機能:
+ * - グリッドレイアウトによるスキルカード表示（4列レスポンシブ）
+ * - 各スキルのアイコン、カテゴリ、説明、習熟度を表示
+ * - アニメーション付きプログレスバー
+ * - ホバー時のスケールエフェクト
+ */
+
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -13,26 +26,44 @@ import {
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
+/**
+ * skillIcons - スキルIDとアイコンのマッピング
+ * 
+ * @description 各スキルの識別子に対応するLucideアイコンを定義
+ *              翻訳データのskill.idと一致させる必要がある
+ */
 const skillIcons: Record<string, LucideIcon> = {
-  react: Layers,
-  aws: Cloud,
-  french: Languages,
-  r: BarChart3,
-  ruby: Gem,
-  vite: Globe,
-  secretary: Award,
+  react: Layers,      // React → レイヤーアイコン
+  aws: Cloud,         // AWS → クラウドアイコン
+  french: Languages,  // フランス語 → 言語アイコン
+  r: BarChart3,       // R言語 → チャートアイコン
+  ruby: Gem,          // Ruby → 宝石アイコン
+  vite: Globe,        // Vite → グローブアイコン
+  secretary: Award,   // 秘書検定 → 賞アイコン
 };
 
+/**
+ * containerVariants - スキルグリッドのアニメーション設定
+ * 
+ * @description staggerChildrenで子要素を0.1秒間隔で順次表示
+ *              スキルカードが次々と現れる演出を実現
+ */
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.1,  // 0.1秒間隔で順次表示
     },
   },
 };
 
+/**
+ * cardVariants - スキルカードのアニメーション設定
+ * 
+ * @description フェードイン + スケール + 上方向スライドの複合アニメーション
+ *              カードが「ポップアップ」するような動きを実現
+ */
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.8, y: 20 },
   visible: {
@@ -45,6 +76,14 @@ const cardVariants = {
   },
 };
 
+/**
+ * Skills - スキルセクションコンポーネント
+ * 
+ * @description 技術スキルと資格をカードグリッドで表示
+ *              各カードには習熟度プログレスバーを含む
+ * 
+ * @returns {JSX.Element} スキルセクション要素
+ */
 const Skills: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.skills[language];

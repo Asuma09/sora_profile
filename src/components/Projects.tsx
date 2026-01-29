@@ -1,3 +1,17 @@
+/**
+ * Projects.tsx - プロジェクトセクションコンポーネント
+ * 
+ * このコンポーネントは過去および進行中のプロジェクトを
+ * カード形式で表示し、詳細モーダルを提供します。
+ * 
+ * 主な機能:
+ * - プロジェクトカードの2カラムグリッド表示
+ * - ステータスバッジ（完了/進行中/計画中）
+ * - クリックで詳細モーダル表示
+ * - タグによる使用技術の表示
+ * - AnimatePresenceによるモーダルのスムーズな開閉
+ */
+
 import { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -10,17 +24,34 @@ import {
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
+/**
+ * projectIcons - プロジェクトIDとアイコンのマッピング
+ * 
+ * @description 各プロジェクトに対応するアイコンを定義
+ *              翻訳データのproject.idと一致させる
+ */
 const projectIcons: Record<string, LucideIcon> = {
-  'chrome-extension': Chrome,
-  'aws-study': Cloud,
+  'chrome-extension': Chrome,  // Chrome拡張 → Chromeアイコン
+  'aws-study': Cloud,          // AWS学習 → クラウドアイコン
 };
 
+/**
+ * statusColors - プロジェクトステータスに対応するスタイル
+ * 
+ * @description 各ステータスの背景色、テキスト色、ボーダー色を定義
+ *              Tailwind CSSクラスを使用
+ */
 const statusColors: Record<string, string> = {
-  completed: 'bg-green-500/20 text-green-400 border-green-500/30',
-  'in-progress': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  planned: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+  completed: 'bg-green-500/20 text-green-400 border-green-500/30',      // 完了 → 緑
+  'in-progress': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', // 進行中 → 黄
+  planned: 'bg-slate-500/20 text-slate-400 border-slate-500/30',        // 計画中 → グレー
 };
 
+/**
+ * containerVariants - プロジェクトグリッドのアニメーション設定
+ * 
+ * @description 子要素を0.2秒間隔で順次表示するスタガーアニメーション
+ */
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -31,6 +62,11 @@ const containerVariants = {
   },
 };
 
+/**
+ * cardVariants - プロジェクトカードのアニメーション設定
+ * 
+ * @description フェードイン + 上方向スライドのアニメーション
+ */
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
@@ -42,9 +78,22 @@ const cardVariants = {
   },
 };
 
+/**
+ * Projects - プロジェクトセクションコンポーネント
+ * 
+ * @description プロジェクト一覧をカードで表示し、
+ *              クリック時に詳細モーダルを表示する
+ * 
+ * @returns {JSX.Element} プロジェクトセクション要素
+ */
 const Projects: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.projects[language];
+  
+  /**
+   * selectedProject - 選択されたプロジェクトのID
+   * null: モーダル閉じている, string: 選択中のプロジェクトID
+   */
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   return (

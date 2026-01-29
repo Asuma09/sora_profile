@@ -1,14 +1,42 @@
+/**
+ * GoalTracker.tsx - 目標トラッカーセクションコンポーネント
+ * 
+ * このコンポーネントは現在取り組んでいる目標と
+ * その進捗状況を視覚的に表示します。
+ * 
+ * 主な機能:
+ * - 目標カードの2カラムグリッド表示
+ * - プログレスバーによる進捗率の可視化
+ * - マイルストーンのチェックリスト表示
+ * - 目標期限の表示
+ * - カラーテーマ（青/オレンジ）による視覚的区別
+ */
+
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Languages, Cloud, CheckCircle2, Circle, LucideIcon } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
+/**
+ * goalIcons - 目標IDとアイコンのマッピング
+ * 
+ * @description 各目標に対応するLucideアイコンを定義
+ *              翻訳データのgoal.idと一致させる
+ */
 const goalIcons: Record<string, LucideIcon> = {
-  'french-cert': Languages,
-  'aws-cert': Cloud,
+  'french-cert': Languages,  // 仏検 → 言語アイコン
+  'aws-cert': Cloud,         // AWS認定 → クラウドアイコン
 };
 
+/**
+ * GoalTracker - 目標トラッカーコンポーネント
+ * 
+ * @description 目標と進捗状況をカード形式で表示
+ *              各目標にはプログレスバーとマイルストーンリストを含む
+ * 
+ * @returns {JSX.Element} 目標トラッカーセクション要素
+ */
 const GoalTracker: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.goals[language];
