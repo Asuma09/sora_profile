@@ -20,6 +20,7 @@ import {
   ExternalLink,
   X,
   LucideIcon,
+  BookOpen,
 } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
@@ -33,6 +34,7 @@ import { translations } from '../translations';
 const projectIcons: Record<string, LucideIcon> = {
   'chrome-extension': Chrome,  // Chrome拡張 → Chromeアイコン
   'aws-study': Cloud,          // AWS学習 → クラウドアイコン
+  'tango-app': BookOpen,       // 英単語アプリ → 本アイコン
 };
 
 /**
@@ -327,6 +329,24 @@ const Projects: React.FC = () => {
                           ))}
                         </div>
                       </div>
+
+                      {/* URL - if available */}
+                      {project.url && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-white mb-3">
+                            {t.link}
+                          </h3>
+                          <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/50 text-blue-300 rounded-lg hover:bg-blue-600/40 hover:border-blue-500 transition-all"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            {project.url}
+                          </a>
+                        </div>
+                      )}
 
                       {/* Close button */}
                       <motion.button

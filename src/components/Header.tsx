@@ -58,6 +58,7 @@ const Header: React.FC = () => {
    */
   const navItems = [
     { label: t.about, href: '#about' },
+    { label: t.history, href: '#history' },
     { label: t.skills, href: '#skills' },
     { label: t.projects, href: '#projects' },
     { label: t.goals, href: '#goals' },
