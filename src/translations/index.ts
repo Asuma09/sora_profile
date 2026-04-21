@@ -239,9 +239,9 @@ export const translations = {
       items: [
         {
           id: 'university-entry',
-          period: 'April 2022',
+          period: 'April 2024',
           title: 'Entered Momoyama Gakuin University',
-          category: 'Education',
+          category: 'School of International Liberal Arts',
           description: 'Enrolled in the School of International Liberal Arts. Started learning in an environment that fosters global perspectives and multifaceted thinking.',
           highlights: [
             'Began studies in International Liberal Arts',
@@ -250,35 +250,11 @@ export const translations = {
           ],
         },
         {
-          id: 'programming-start',
-          period: '2023',
-          title: 'Started Programming Learning in Earnest',
-          category: 'Technology',
-          description: 'Began in-depth learning of programming languages such as React and Ruby. Built foundational web development skills.',
-          highlights: [
-            'Mastered React fundamentals',
-            'Started learning Ruby',
-            'Gained Chrome extension development experience',
-          ],
-        },
-        {
-          id: 'french-cert',
-          period: 'June 2023',
-          title: 'Passed French Certification Level 4',
-          category: 'Certification',
-          description: 'Passed the French Certification Level 4 exam. French language learning efforts came to fruition.',
-          highlights: [
-            'Obtained French Certification Level 4',
-            'Mastered French language basics',
-            'Established continuous language learning habits',
-          ],
-        },
-        {
           id: 'secretary-cert',
-          period: 'November 2023',
+          period: 'October 2024',
           title: 'Obtained Secretary Skills Certification Level 3',
           category: 'Certification',
-          description: 'Passed the Secretary Skills Test Grade 3. Developed professional business skills.',
+          description: 'Passed the Secretary Skills Test Grade 3 as a business skill. Developed foundational professional skills.',
           highlights: [
             'Obtained Secretary Skills Certification Level 3',
             'Mastered business etiquette',
@@ -286,8 +262,33 @@ export const translations = {
           ],
         },
         {
+          id: 'programming-start',
+          period: '2025',
+          title: 'Started Programming Learning in Earnest',
+          category: 'Technology',
+          description: 'Began in-depth learning of programming languages such as React and Ruby. Built foundational web development skills.',
+          highlights: [
+            'Learned React',
+            'Started learning Ruby',
+            'Gained Chrome extension development experience',
+            'Developed English word learning app',
+          ],
+        },
+        {
+          id: 'french-cert',
+          period: 'June 2025',
+          title: 'Passed French Certification Level 4',
+          category: 'Certification',
+          description: 'Passed the French Certification Level 4 exam.',
+          highlights: [
+            'Obtained French Certification Level 4',
+            'Mastered French language basics',
+            'Established continuous language learning habits',
+          ],
+        },
+        {
           id: 'aws-start',
-          period: '2024',
+          period: '2026',
           title: 'Started AWS Learning',
           category: 'Technology',
           description: 'Began studying for AWS Cloud Practitioner certification due to interest in cloud technology.',
@@ -299,7 +300,7 @@ export const translations = {
         },
         {
           id: 'portfolio-development',
-          period: '2024 - Present',
+          period: '2026 - Present',
           title: 'Portfolio Website Development',
           category: 'Project',
           description: 'Developed a portfolio website with React to showcase skills and accomplishments. Continuously implementing latest technologies.',
@@ -529,7 +530,7 @@ export const translations = {
           status: 'completed',
           highlights: [
             'Interactive learning interface',
-            'Real-time score tracking',
+            'Quiz-style learning',
             'Deployed on Vercel',
           ],
         },
