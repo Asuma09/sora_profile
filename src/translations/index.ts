@@ -219,6 +219,18 @@ export const translations = {
           ],
         },
         {
+          id: 'italian-start',
+          period: '2026年4月',
+          title: 'イタリア語学習開始',
+          category: '語学',
+          description: '新たな語学への挑戦としてイタリア語の学習を開始。多言語習得への取り組みを継続。',
+          highlights: [
+            'イタリア語基礎の学習',
+            '多言語学習の継続',
+            '語学力の拡充',
+          ],
+        },
+        {
           id: 'portfolio-development',
           period: '2026年〜現在',
           title: 'ポートフォリオサイト開発',
@@ -296,6 +308,18 @@ export const translations = {
             'Acquired AWS fundamentals',
             'Learned EC2, S3, and IAM',
             'Preparing for Cloud Practitioner certification exam',
+          ],
+        },
+        {
+          id: 'italian-start',
+          period: 'April 2026',
+          title: 'Started Learning Italian',
+          category: 'Language',
+          description: 'Began learning Italian as a new language challenge. Continuing the pursuit of multilingual proficiency.',
+          highlights: [
+            'Studying Italian fundamentals',
+            'Continuing multilingual learning',
+            'Expanding language skills',
           ],
         },
         {
