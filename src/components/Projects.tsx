@@ -1,15 +1,8 @@
 /**
- * Projects.tsx - プロジェクトセクションコンポーネント
- * 
- * このコンポーネントは過去および進行中のプロジェクトを
- * カード形式で表示し、詳細モーダルを提供します。
- * 
- * 主な機能:
- * - プロジェクトカードの2カラムグリッド表示
- * - ステータスバッジ（完了/進行中/計画中）
- * - クリックで詳細モーダル表示
- * - タグによる使用技術の表示
- * - AnimatePresenceによるモーダルのスムーズな開閉
+ * Projects.tsx - プロジェクトセクション
+ *
+ * Editorial風マガジングリッド: 1枚大 + 残り小サイズ。
+ * 枠線のカードを排除し、番号付きの大型タイポで表現。
  */
 
 import { useContext, useState } from 'react';
@@ -21,208 +14,203 @@ import {
   X,
   LucideIcon,
   BookOpen,
+  ArrowUpRight,
 } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
-/**
- * projectIcons - プロジェクトIDとアイコンのマッピング
- * 
- * @description 各プロジェクトに対応するアイコンを定義
- *              翻訳データのproject.idと一致させる
- */
 const projectIcons: Record<string, LucideIcon> = {
-  'chrome-extension': Chrome,  // Chrome拡張 → Chromeアイコン
-  'aws-study': Cloud,          // AWS学習 → クラウドアイコン
-  'tango-app': BookOpen,       // 英単語アプリ → 本アイコン
+  'chrome-extension': Chrome,
+  'aws-study': Cloud,
+  'tango-app': BookOpen,
 };
 
-/**
- * statusColors - プロジェクトステータスに対応するスタイル
- * 
- * @description 各ステータスの背景色、テキスト色、ボーダー色を定義
- *              Tailwind CSSクラスを使用
- */
-const statusColors: Record<string, string> = {
-  completed: 'bg-green-500/20 text-green-400 border-green-500/30',      // 完了 → 緑
-  'in-progress': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', // 進行中 → 黄
-  planned: 'bg-slate-500/20 text-slate-400 border-slate-500/30',        // 計画中 → グレー
+const statusLabelColors: Record<string, string> = {
+  completed: 'text-green-400',
+  'in-progress': 'text-accent-400',
+  planned: 'text-slate-400',
 };
 
-/**
- * containerVariants - プロジェクトグリッドのアニメーション設定
- * 
- * @description 子要素を0.2秒間隔で順次表示するスタガーアニメーション
- */
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
+type ProjectItem = {
+  id: string;
+  title: string;
+  titleJa: string;
+  description: string;
+  url?: string;
+  tags: string[];
+  status: string;
+  highlights: string[];
 };
 
-/**
- * cardVariants - プロジェクトカードのアニメーション設定
- * 
- * @description フェードイン + 上方向スライドのアニメーション
- */
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-    },
-  },
-};
-
-/**
- * Projects - プロジェクトセクションコンポーネント
- * 
- * @description プロジェクト一覧をカードで表示し、
- *              クリック時に詳細モーダルを表示する
- * 
- * @returns {JSX.Element} プロジェクトセクション要素
- */
 const Projects: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.projects[language];
-  
-  /**
-   * selectedProject - 選択されたプロジェクトのID
-   * null: モーダル閉じている, string: 選択中のプロジェクトID
-   */
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
+  const items = t.items as ProjectItem[];
+  const [featured, ...rest] = items;
+
   return (
-    <section id="projects" className="py-24 px-4 bg-slate-950">
-      <div className="mx-auto max-w-7xl">
-        {/* Section header */}
+    <section
+      id="projects"
+      className="relative py-24 md:py-32 px-6 md:px-12"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Section label */}
         <motion.div
-          className="text-center mb-16"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-accent-400 mb-8"
+        >
+          <span className="font-display italic text-sm">05</span>
+          <span className="h-px w-8 bg-accent-400/50" />
+          Projects
+        </motion.div>
+
+        {/* Heading */}
+        <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            {t.sectionTitle} <span className="text-blue-400">{t.sectionTitleAccent}</span>
-          </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            {t.sectionSubtitle}
-          </p>
-        </motion.div>
-
-        {/* Projects grid */}
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7 }}
+          className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] mb-6 max-w-4xl"
         >
-          {t.items.map((project) => {
-            const IconComponent = projectIcons[project.id];
-            return (
-              <motion.div
-                key={project.id}
-                variants={cardVariants}
-                className="group cursor-pointer"
-                onClick={() => setSelectedProject(project.id)}
-              >
-                <div className="h-full p-8 bg-gradient-to-b from-slate-900 to-slate-900/50 rounded-2xl border border-slate-800 hover:border-blue-500/50 transition-all duration-300 flex flex-col hover:shadow-lg hover:shadow-blue-500/20"
-                  style={{ perspective: '1000px' }}
-                >
-                  <motion.div
-                    className="w-full h-full"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          Things{' '}
+          <span className="italic text-accent-300">I've built.</span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="font-serif-jp text-base md:text-lg text-slate-300 max-w-2xl mb-20"
+        >
+          {t.sectionSubtitle}
+        </motion.p>
+
+        {/* Featured project */}
+        {featured && (
+          <motion.button
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8 }}
+            onClick={() => setSelectedProject(featured.id)}
+            className="group block w-full text-left mb-20 md:mb-28"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end border-b border-slate-800 pb-12">
+              {/* Number */}
+              <div className="lg:col-span-2">
+                <span className="font-display italic text-accent-400 text-sm block mb-2">
+                  Featured · 01
+                </span>
+                <span className="font-display text-[10rem] leading-[0.8] text-outline text-white/80">
+                  01
+                </span>
+              </div>
+
+              {/* Title + description */}
+              <div className="lg:col-span-7">
+                <div className="flex items-center gap-3 mb-4">
+                  <span
+                    className={`text-xs uppercase tracking-[0.2em] ${statusLabelColors[featured.status]}`}
                   >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-6">
-                    <motion.div
-                      className="w-14 h-14 bg-blue-600/10 rounded-xl flex items-center justify-center group-hover:bg-blue-600/20 transition-colors"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <IconComponent className="w-7 h-7 text-blue-400" />
-                    </motion.div>
-                    <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full border ${statusColors[project.status]}`}
-                    >
-                      {t.status[project.status as keyof typeof t.status]}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-blue-400 mb-4">{project.titleJa}</p>
-
-                  {/* Description */}
-                  <p className="text-slate-400 mb-6 flex-grow">
-                    {project.description}
-                  </p>
-
-                  {/* Highlights */}
-                  <ul className="space-y-2 mb-6">
-                    {project.highlights.map((highlight, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center gap-2 text-sm text-slate-300"
-                      >
-                        <span className="w-1 h-1 bg-blue-400 rounded-full" />
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 text-xs bg-slate-800 text-slate-300 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* View more indicator */}
-                  <motion.div
-                    className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-end text-blue-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-                    whileHover={{ x: 5 }}
-                  >
-                    {t.viewMore}
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </motion.div>
-                  </motion.div>
+                    ● {t.status[featured.status as keyof typeof t.status]}
+                  </span>
                 </div>
-              </motion.div>
+                <h3 className="font-display text-4xl md:text-6xl text-white leading-[1.02] mb-4 group-hover:text-accent-400 transition-colors">
+                  {featured.title}
+                </h3>
+                <p className="font-serif-jp text-lg text-slate-300 max-w-xl leading-relaxed">
+                  {featured.description}
+                </p>
+              </div>
+
+              {/* CTA */}
+              <div className="lg:col-span-3 flex lg:justify-end">
+                <div className="inline-flex items-center gap-2 text-slate-300 group-hover:text-accent-400 transition-colors">
+                  <span className="font-display italic">
+                    {t.viewMore}
+                  </span>
+                  <ArrowUpRight className="w-5 h-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </div>
+              </div>
+            </div>
+          </motion.button>
+        )}
+
+        {/* Rest of projects */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+          {rest.map((project, idx) => {
+            const Icon = projectIcons[project.id];
+            return (
+              <motion.button
+                key={project.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.7, delay: idx * 0.1 }}
+                onClick={() => setSelectedProject(project.id)}
+                className="group text-left"
+              >
+                {/* Number */}
+                <span className="font-display italic text-accent-400 text-sm block mb-3">
+                  0{idx + 2}
+                </span>
+
+                {/* Icon + status */}
+                <div className="flex items-center justify-between mb-4">
+                  {Icon && (
+                    <Icon
+                      className="w-6 h-6 text-slate-300 group-hover:text-accent-400 transition-colors"
+                      strokeWidth={1.5}
+                    />
+                  )}
+                  <span
+                    className={`text-xs uppercase tracking-[0.2em] ${statusLabelColors[project.status]}`}
+                  >
+                    ● {t.status[project.status as keyof typeof t.status]}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h3 className="font-display text-3xl md:text-4xl text-white leading-tight mb-3 group-hover:text-accent-400 transition-colors">
+                  {project.title}
+                </h3>
+
+                {/* Description */}
+                <p className="font-serif-jp text-slate-300 leading-relaxed mb-4">
+                  {project.description}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400 pt-4 border-t border-slate-800">
+                  {project.tags.map((tag, i) => (
+                    <span key={tag} className="flex items-center gap-3">
+                      {i > 0 && <span className="text-slate-700">·</span>}
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.button>
             );
           })}
-        </motion.div>
+        </div>
       </div>
 
       {/* Modal */}
       <AnimatePresence>
         {selectedProject && (
           <>
-            {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-40"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedProject(null)}
             />
-
-            {/* Modal Content */}
             <motion.div
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               initial={{ opacity: 0 }}
@@ -231,132 +219,110 @@ const Projects: React.FC = () => {
               onClick={() => setSelectedProject(null)}
             >
               <motion.div
-                className="bg-slate-900 rounded-2xl border border-slate-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-                initial={{ scale: 0.95, y: 20 }}
+                className="bg-slate-900 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+                initial={{ scale: 0.96, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 20 }}
+                exit={{ scale: 0.96, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {t.items.map((project) => {
+                {items.map((project) => {
                   if (project.id !== selectedProject) return null;
-                  const IconComponent = projectIcons[project.id];
+                  const Icon = projectIcons[project.id];
 
                   return (
-                    <div key={project.id} className="p-8">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-6">
-                        <div>
-                          <div className="flex items-center gap-4 mb-4">
-                            <div className="w-16 h-16 bg-blue-600/10 rounded-xl flex items-center justify-center">
-                              <IconComponent className="w-8 h-8 text-blue-400" />
-                            </div>
-                            <div>
-                              <h2 className="text-2xl font-bold text-white mb-1">
-                                {project.title}
-                              </h2>
-                              <p className="text-blue-400 font-medium">
-                                {project.titleJa}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                    <div key={project.id} className="p-8 md:p-12">
+                      {/* Close */}
+                      <div className="flex justify-end mb-6">
                         <button
                           onClick={() => setSelectedProject(null)}
-                          className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+                          className="p-2 hover:bg-slate-800 transition-colors"
+                          aria-label="Close"
                         >
-                          <X className="w-6 h-6 text-slate-400" />
+                          <X className="w-5 h-5 text-slate-300" />
                         </button>
                       </div>
 
-                      {/* Status */}
-                      <div className="mb-6">
+                      {/* Header */}
+                      <div className="flex items-center gap-4 mb-6">
+                        {Icon && (
+                          <Icon className="w-8 h-8 text-accent-400" strokeWidth={1.5} />
+                        )}
                         <span
-                          className={`px-3 py-1 text-xs font-medium rounded-full border ${statusColors[project.status]}`}
+                          className={`text-xs uppercase tracking-[0.2em] ${statusLabelColors[project.status]}`}
                         >
-                          {t.status[project.status as keyof typeof t.status]}
+                          ● {t.status[project.status as keyof typeof t.status]}
                         </span>
                       </div>
 
-                      {/* Description */}
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-white mb-2">
+                      <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mb-2">
+                        {project.title}
+                      </h2>
+                      <p className="font-display italic text-accent-300 mb-8">
+                        {project.titleJa}
+                      </p>
+
+                      {/* Overview */}
+                      <div className="mb-8">
+                        <p className="text-xs uppercase tracking-[0.3em] text-accent-400 mb-3">
                           {t.overview}
-                        </h3>
-                        <p className="text-slate-300 leading-relaxed">
+                        </p>
+                        <p className="font-serif-jp text-base md:text-lg text-slate-300 leading-[1.9]">
                           {project.description}
                         </p>
                       </div>
 
-                      {/* Highlights */}
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-white mb-3">
+                      {/* Features */}
+                      <div className="mb-8">
+                        <p className="text-xs uppercase tracking-[0.3em] text-accent-400 mb-4">
                           {t.features}
-                        </h3>
-                        <ul className="space-y-2">
-                          {project.highlights.map((highlight, index) => (
+                        </p>
+                        <ul className="space-y-2 border-t border-slate-800">
+                          {project.highlights.map((highlight, idx) => (
                             <li
-                              key={index}
-                              className="flex items-center gap-3 text-slate-300"
+                              key={idx}
+                              className="flex items-baseline gap-4 py-3 border-b border-slate-800 text-slate-300"
                             >
-                              <motion.span
-                                className="w-2 h-2 bg-blue-400 rounded-full"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                              />
-                              {highlight}
+                              <span className="font-display italic text-accent-400 text-sm">
+                                0{idx + 1}
+                              </span>
+                              <span className="font-serif-jp">{highlight}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
-                      {/* Tags */}
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-white mb-3">
+                      {/* Tech */}
+                      <div className="mb-8">
+                        <p className="text-xs uppercase tracking-[0.3em] text-accent-400 mb-4">
                           {t.technologies}
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <motion.span
-                              key={tag}
-                              className="px-3 py-1 text-sm bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-full"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ type: 'spring', stiffness: 200 }}
-                            >
+                        </p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-slate-300">
+                          {project.tags.map((tag, i) => (
+                            <span key={tag} className="flex items-center gap-4">
+                              {i > 0 && <span className="text-slate-700">·</span>}
                               {tag}
-                            </motion.span>
+                            </span>
                           ))}
                         </div>
                       </div>
 
-                      {/* URL - if available */}
+                      {/* URL */}
                       {project.url && (
-                        <div className="mb-6">
-                          <h3 className="text-lg font-semibold text-white mb-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.3em] text-accent-400 mb-3">
                             {t.link}
-                          </h3>
+                          </p>
                           <a
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/50 text-blue-300 rounded-lg hover:bg-blue-600/40 hover:border-blue-500 transition-all"
+                            className="group inline-flex items-center gap-2 text-white border-b border-accent-400 pb-1 hover:gap-3 transition-all"
                           >
-                            <ExternalLink className="w-4 h-4" />
-                            {project.url}
+                            <span className="font-display italic">{project.url}</span>
+                            <ExternalLink className="w-4 h-4 text-accent-400" />
                           </a>
                         </div>
                       )}
-
-                      {/* Close button */}
-                      <motion.button
-                        onClick={() => setSelectedProject(null)}
-                        className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {t.close}
-                      </motion.button>
                     </div>
                   );
                 })}
