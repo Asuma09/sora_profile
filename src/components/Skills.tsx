@@ -1,14 +1,8 @@
 /**
- * Skills.tsx - スキルセクションコンポーネント
- * 
- * このコンポーネントは技術スキルと資格を視覚的に表示します。
- * 各スキルはカードUIで表現され、習熟度をプログレスバーで示します。
- * 
- * 主な機能:
- * - グリッドレイアウトによるスキルカード表示（4列レスポンシブ）
- * - 各スキルのアイコン、カテゴリ、説明、習熟度を表示
- * - アニメーション付きプログレスバー
- * - ホバー時のスケールエフェクト
+ * Skills.tsx - スキルセクション
+ *
+ * カテゴリマトリクス方式: スキルをカテゴリ別にグループ化し、
+ * 大型のスキル名 + 小さなレベルドットで表現。カードなし。
  */
 
 import { useContext } from 'react';
@@ -26,149 +20,153 @@ import {
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
-/**
- * skillIcons - スキルIDとアイコンのマッピング
- * 
- * @description 各スキルの識別子に対応するLucideアイコンを定義
- *              翻訳データのskill.idと一致させる必要がある
- */
 const skillIcons: Record<string, LucideIcon> = {
-  react: Layers,      // React → レイヤーアイコン
-  aws: Cloud,         // AWS → クラウドアイコン
-  french: Languages,  // フランス語 → 言語アイコン
-  r: BarChart3,       // R言語 → チャートアイコン
-  ruby: Gem,          // Ruby → 宝石アイコン
-  vite: Globe,        // Vite → グローブアイコン
-  secretary: Award,   // 秘書検定 → 賞アイコン
+  react: Layers,
+  aws: Cloud,
+  french: Languages,
+  r: BarChart3,
+  ruby: Gem,
+  vite: Globe,
+  secretary: Award,
 };
 
-/**
- * containerVariants - スキルグリッドのアニメーション設定
- * 
- * @description staggerChildrenで子要素を0.1秒間隔で順次表示
- *              スキルカードが次々と現れる演出を実現
- */
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,  // 0.1秒間隔で順次表示
-    },
-  },
+type Skill = {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  level: number;
 };
 
-/**
- * cardVariants - スキルカードのアニメーション設定
- * 
- * @description フェードイン + スケール + 上方向スライドの複合アニメーション
- *              カードが「ポップアップ」するような動きを実現
- */
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 20 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
-
-/**
- * Skills - スキルセクションコンポーネント
- * 
- * @description 技術スキルと資格をカードグリッドで表示
- *              各カードには習熟度プログレスバーを含む
- * 
- * @returns {JSX.Element} スキルセクション要素
- */
 const Skills: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.skills[language];
 
+  // Group skills by category
+  const grouped = (t.items as Skill[]).reduce<Record<string, Skill[]>>(
+    (acc, skill) => {
+      (acc[skill.category] ??= []).push(skill);
+      return acc;
+    },
+    {}
+  );
+  const categoryOrder = Object.keys(grouped);
+
   return (
-    <section id="skills" className="py-24 px-4 bg-slate-900/50">
-      <div className="mx-auto max-w-7xl">
-        {/* Section header */}
+    <section id="skills" className="relative py-24 md:py-32 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto">
+        {/* Section label */}
         <motion.div
-          className="text-center mb-16"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-accent-400 mb-8"
+        >
+          <span className="font-display italic text-sm">04</span>
+          <span className="h-px w-8 bg-accent-400/50" />
+          Skills
+        </motion.div>
+
+        {/* Heading */}
+        <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7 }}
+          className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] mb-6 max-w-4xl"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            {t.sectionTitle} <span className="text-blue-400">{t.sectionTitleAccent}</span>
-          </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            {t.sectionSubtitle}
-          </p>
-        </motion.div>
+          Toolkit{' '}
+          <span className="italic text-accent-300">& craft.</span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="font-serif-jp text-base md:text-lg text-slate-300 max-w-2xl mb-20"
+        >
+          {t.sectionSubtitle}
+        </motion.p>
 
-        {/* Skills grid */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-        >
-          {t.items.map((skill) => {
-            const IconComponent = skillIcons[skill.id];
-            return (
-              <motion.div
-                key={skill.id}
-                variants={cardVariants}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group"
-              >
-                <div className="h-full p-6 bg-slate-900 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all duration-300">
-                  {/* Icon & Category */}
-                  <div className="flex items-start justify-between mb-4">
-                    <motion.div
-                      className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center group-hover:bg-blue-600/20 transition-colors"
-                      whileHover={{ rotate: 10 }}
+        {/* Categories */}
+        <div className="space-y-16 md:space-y-20">
+          {categoryOrder.map((category, catIdx) => (
+            <motion.div
+              key={category}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 0.7 }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 border-t border-slate-800 pt-12"
+            >
+              {/* Category label */}
+              <div className="lg:col-span-3 flex lg:flex-col items-baseline lg:items-start gap-4 lg:gap-2">
+                <span className="font-display italic text-accent-400 text-sm">
+                  0{catIdx + 1}
+                </span>
+                <h3 className="font-display text-2xl md:text-3xl text-white">
+                  {category}
+                </h3>
+              </div>
+
+              {/* Skills in category */}
+              <div className="lg:col-span-9 space-y-8">
+                {grouped[category].map((skill) => {
+                  const Icon = skillIcons[skill.id] ?? Award;
+                  const dots = 5;
+                  const filled = Math.round((skill.level / 100) * dots);
+
+                  return (
+                    <div
+                      key={skill.id}
+                      className="group grid grid-cols-12 gap-4 items-center py-4 hover:bg-slate-900/30 -mx-4 px-4 rounded-sm transition-colors"
                     >
-                      <IconComponent className="w-6 h-6 text-blue-400" />
-                    </motion.div>
-                    <span className="text-xs font-medium text-slate-500 bg-slate-800 px-2 py-1 rounded-full">
-                      {skill.category}
-                    </span>
-                  </div>
+                      {/* Icon */}
+                      <div className="col-span-1">
+                        <Icon
+                          className="w-5 h-5 text-slate-300 group-hover:text-accent-400 transition-colors"
+                          strokeWidth={1.5}
+                        />
+                      </div>
 
-                  {/* Name */}
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {skill.name}
-                  </h3>
+                      {/* Name + description */}
+                      <div className="col-span-11 md:col-span-7">
+                        <h4 className="font-display text-2xl md:text-3xl text-white leading-none mb-1">
+                          {skill.name}
+                        </h4>
+                        <p className="text-sm text-slate-300 font-serif-jp">
+                          {skill.description}
+                        </p>
+                      </div>
 
-                  {/* Description */}
-                  <p className="text-sm text-slate-400 mb-4">
-                    {skill.description}
-                  </p>
-
-                  {/* Progress bar */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-500">{t.proficiency}</span>
-                      <span className="text-blue-400">{skill.level}%</span>
+                      {/* Level dots */}
+                      <div className="col-span-12 md:col-span-4 flex items-center gap-3 md:justify-end">
+                        <div className="flex gap-1.5">
+                          {Array.from({ length: dots }).map((_, i) => (
+                            <motion.span
+                              key={i}
+                              initial={{ opacity: 0, scale: 0 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 0.1 + i * 0.05 }}
+                              className={`block w-2 h-2 rounded-full ${
+                                i < filled ? 'bg-accent-400' : 'bg-slate-700'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="font-display italic text-accent-300 text-sm w-10 text-right">
+                          {skill.level}
+                        </span>
+                      </div>
                     </div>
-                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

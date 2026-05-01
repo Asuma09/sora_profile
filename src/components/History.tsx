@@ -1,153 +1,178 @@
 /**
- * History.tsx - 履歴・経歴セクションコンポーネント
- * 
- * このコンポーネントは教育、キャリア、学習経歴などを
- * タイムライン形式で表示します。
- * 
- * 主な機能:
- * - タイムラインレイアウト（レスポンシブ対応）
- * - 年号、タイトル、説明の表示
- * - スクロール連動のアニメーション
- * - 交互配置でビジュアル化
+ * History.tsx - 履歴・経歴セクション
+ *
+ * Editorial風: 左に超大型のセリフ年号、右にテキスト。
+ * 年号がビジュアル的な主役。
  */
 
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Award } from 'lucide-react';
+import {
+  Award,
+  Briefcase,
+  Cloud,
+  Code,
+  GraduationCap,
+  Languages,
+  LucideIcon,
+} from 'lucide-react';
 import { LanguageContext } from '../App';
 import { translations } from '../translations';
 
-/**
- * History - 履歴・経歴セクションコンポーネント
- * 
- * @description 教育・キャリア経歴をタイムライン形式で表示
- * 
- * @returns {JSX.Element} Historyセクション要素
- */
+const historyIcons: Record<string, LucideIcon> = {
+  'university-entry': GraduationCap,
+  'secretary-cert': Award,
+  'programming-start': Code,
+  'french-cert': Languages,
+  'italian-start': Languages,
+  'aws-start': Cloud,
+  'portfolio-development': Briefcase,
+};
+
+type HistoryItem = {
+  id: string;
+  period: string;
+  title: string;
+  category?: string;
+  description: string;
+  highlights?: string[];
+};
+
+/** "2024年4月" / "April 2024" / "2026年〜現在" から年だけ抽出 */
+const extractYear = (period: string): string => {
+  const match = period.match(/\d{4}/);
+  return match ? match[0] : period.slice(0, 4);
+};
+
+/** 月部分を抽出 (なければ空) */
+const extractMonth = (period: string): string => {
+  const jaMatch = period.match(/(\d{1,2})月/);
+  if (jaMatch) return `${jaMatch[1]}月`;
+  const enMatch = period.match(
+    /(January|February|March|April|May|June|July|August|September|October|November|December)/i
+  );
+  if (enMatch) return enMatch[1].slice(0, 3);
+  if (period.includes('現在') || period.toLowerCase().includes('present')) {
+    return period.match(/[〜-]\s*(現在|Present)/i)?.[1] ?? '';
+  }
+  return '';
+};
+
 const History: React.FC = () => {
   const { language } = useContext(LanguageContext);
   const t = translations.history?.[language] || {
     sectionTitle: 'History',
     sectionTitleAccent: 'Timeline',
     sectionSubtitle: 'My Journey',
-    items: [],
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-      },
-    },
+    items: [] as HistoryItem[],
   };
 
   return (
-    <section className="py-20 px-4 md:px-8 lg:px-16 bg-slate-900/50" id="history">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-sm uppercase tracking-widest text-blue-400 mb-4"
-          >
-            {t.sectionSubtitle}
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-bold mb-4"
-          >
-            {t.sectionTitle}{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              {t.sectionTitleAccent}
-            </span>
-          </motion.h2>
-        </div>
-
-        {/* Timeline */}
+    <section id="history" className="relative py-24 md:py-32 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto">
+        {/* Section label */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="relative"
+          transition={{ duration: 0.6 }}
+          className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-accent-400 mb-8"
         >
-          {/* Timeline Line */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-cyan-500" />
+          <span className="font-display italic text-sm">03</span>
+          <span className="h-px w-8 bg-accent-400/50" />
+          History
+        </motion.div>
 
-          {/* Timeline Items */}
-          <div className="space-y-12 md:space-y-16">
-            {t.items?.map((item: any, index: number) => (
+        {/* Big heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7 }}
+          className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] mb-6 max-w-4xl"
+        >
+          A journey{' '}
+          <span className="italic text-accent-300">in chapters.</span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="font-serif-jp text-base md:text-lg text-slate-300 max-w-2xl mb-24"
+        >
+          {t.sectionSubtitle}
+        </motion.p>
+
+        {/* Entries - each a tall row with huge year */}
+        <div className="space-y-24 md:space-y-32">
+          {(t.items as HistoryItem[])?.map((item) => {
+            const Icon = historyIcons[item.id] ?? Award;
+            const year = extractYear(item.period);
+            const month = extractMonth(item.period);
+
+            return (
               <motion.div
                 key={item.id}
-                variants={itemVariants}
-                className={`flex md:flex-row gap-8 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.8 }}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start"
               >
-                {/* Timeline Content */}
-                <div className="md:w-1/2 flex flex-col justify-center">
-                  <div className="bg-slate-800/50 border border-slate-700 hover:border-blue-500 rounded-lg p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
-                    {/* Year/Period */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <Calendar size={18} className="text-blue-400" />
-                      <span className="text-sm text-blue-400 font-semibold uppercase tracking-wide">
-                        {item.period}
-                      </span>
-                    </div>
+                {/* Year - huge outlined */}
+                <div className="lg:col-span-5 relative">
+                  <p className="font-display italic text-accent-400 text-sm mb-2 tracking-wide">
+                    {month || '—'}
+                  </p>
+                  <h3 className="font-display text-[18vw] lg:text-[12rem] leading-[0.85] text-outline text-white/80 tracking-tight">
+                    {year}
+                  </h3>
+                </div>
 
-                    {/* Title */}
-                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-
-                    {/* Category/Type */}
+                {/* Content */}
+                <div className="lg:col-span-7 lg:pt-8 space-y-5">
+                  {/* Category + icon */}
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-5 h-5 text-accent-400" strokeWidth={1.5} />
                     {item.category && (
-                      <p className="text-sm text-gray-400 mb-3">{item.category}</p>
-                    )}
-
-                    {/* Description */}
-                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                      {item.description}
-                    </p>
-
-                    {/* Highlights */}
-                    {item.highlights && item.highlights.length > 0 && (
-                      <ul className="space-y-2">
-                        {item.highlights.map((highlight: string, idx: number) => (
-                          <li key={idx} className="flex items-start gap-2 text-gray-400 text-sm">
-                            <Award size={14} className="text-cyan-400 mt-1 flex-shrink-0" />
-                            <span>{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <span className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                        {item.category}
+                      </span>
                     )}
                   </div>
-                </div>
 
-                {/* Timeline Dot */}
-                <div className="hidden md:flex md:w-1/2 items-center justify-center">
-                  <div className="w-4 h-4 rounded-full bg-blue-500 ring-4 ring-slate-900 ring-offset-4 ring-offset-blue-500" />
+                  {/* Title */}
+                  <h4 className="font-display text-3xl md:text-4xl lg:text-5xl text-white leading-tight">
+                    {item.title}
+                  </h4>
+
+                  {/* Description */}
+                  <p className="font-serif-jp text-base md:text-lg text-slate-300 leading-relaxed max-w-xl">
+                    {item.description}
+                  </p>
+
+                  {/* Highlights */}
+                  {item.highlights && item.highlights.length > 0 && (
+                    <ul className="pt-4 space-y-1 border-t border-slate-800 max-w-xl">
+                      {item.highlights.map((highlight, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-baseline gap-4 py-1.5 text-slate-300 text-sm"
+                        >
+                          <span className="font-display italic text-accent-400 text-xs">
+                            0{idx + 1}
+                          </span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
